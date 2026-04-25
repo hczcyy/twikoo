@@ -3,7 +3,7 @@ name = "twikoo"
 main = "src/index.js"
 compatibility_flags = ["nodejs_compat"]
 compatibility_date = "2026-04-23"
-limits = { subrequests = 15000 }
+
 [[d1_databases]]
 binding = "DB" # available in your Worker on env.DB
 database_name = "twikoo"
