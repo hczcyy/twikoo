@@ -372,10 +372,17 @@ export default {
       protect(request)
       accessToken = anonymousSignIn(event)
       await readConfig()
+      
+      // ========== CORS 处理 ==========
+      // 设置 CORS 响应头
       allowCors(request, headers)
+      
+      // 处理 OPTIONS 预检请求
       if (request.method === 'OPTIONS') {
         return new Response(null, { status: 204, headers })
       }
+      // ========== CORS 处理结束 ==========
+      
       switch (event.event) {
         case 'GET_FUNC_VERSION':
           res = getFuncVersion({ VERSION })
@@ -467,17 +474,21 @@ export default {
   }
 }
 
+// ========== 修改后的 allowCors 函数 ==========
 function allowCors (request, headers) {
   const origin = request.headers.get('origin')
   if (origin) {
-    headers['Access-Control-Allow-Credentials'] = true
-    headers['Access-Control-Allow-Origin'] = getAllowedOrigin(origin)
-    headers['Access-Control-Allow-Methods'] = 'POST'
-    headers['Access-Control-Allow-Headers'] =
-      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    headers['Access-Control-Max-Age'] = '600'
+    const allowedOrigin = getAllowedOrigin(origin)
+    if (allowedOrigin) {
+      headers['Access-Control-Allow-Credentials'] = 'true'
+      headers['Access-Control-Allow-Origin'] = allowedOrigin
+      headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+      headers['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version'
+      headers['Access-Control-Max-Age'] = '86400'
+    }
   }
 }
+// ========== allowCors 函数修改结束 ==========
 
 function getAllowedOrigin (origin) {
   const localhostRegex = /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d{1,5})?$/
