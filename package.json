@@ -20,6 +20,10 @@
     "uuid": "^9.0.1",
     "xss": "^1.0.15"
   },
+  "allowScripts": {
+    "esbuild": true,
+    "workerd": true
+  },
   "overrides": {
     "axios": "git+https://github.com/wuzhengmao/axios-cf-worker.git#v0.x-cf"
   }
